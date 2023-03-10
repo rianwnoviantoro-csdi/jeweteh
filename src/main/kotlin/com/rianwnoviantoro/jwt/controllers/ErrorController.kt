@@ -13,16 +13,16 @@ class ErrorController {
     fun validationHandler(constraintViolationException: ConstraintViolationException): GlobalResponse<Any> {
 
         val rawError = constraintViolationException.message!!.split(", ")
-        val errorlist: ArrayList<String> = ArrayList()
+        val errors: ArrayList<String> = ArrayList()
 
         for (error in rawError) {
-            error.let { errorlist.add(it.substringAfter(": ")) }
+            error.let { errors.add(it.substringAfter(": ")) }
         }
 
         return GlobalResponse(
             out_stat = "F",
             out_mess = "Bad request.",
-            out_data = errorlist
+            out_data = errors
         )
     }
 
@@ -39,7 +39,7 @@ class ErrorController {
     fun notFound(unauthorizedException: UnauthorizedException): GlobalResponse<String> {
         return GlobalResponse(
             out_stat = "F",
-            out_mess = "Unauhorized.",
+            out_mess = "Unauthorized.",
             out_data = null
         )
     }
