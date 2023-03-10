@@ -4,6 +4,7 @@ import com.rianwnoviantoro.jwt.domains.dto.requests.SigninRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.SignupRequest
 import com.rianwnoviantoro.jwt.domains.dto.responses.GlobalResponse
 import com.rianwnoviantoro.jwt.domains.dto.responses.JwtResponse
+import com.rianwnoviantoro.jwt.error.UnauthorizedException
 import com.rianwnoviantoro.jwt.services.UserService
 import com.rianwnoviantoro.jwt.utils.JwtUtil
 import io.jsonwebtoken.Jwts
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
-import javax.validation.ConstraintViolationException
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -55,20 +54,13 @@ class AuthController(private val userService: UserService, private val jwtUtil: 
     fun signin(@RequestBody body: SigninRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
         val user = userService.findByEmail(body)
 
-//        if (!user.isPresent) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GlobalResponse(
+        if (!BCryptPasswordEncoder().matches(body.password, user.get().password)) {
+            throw UnauthorizedException()
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(GlobalResponse(
 //                out_stat = "F",
-//                out_mess = "User doesn't exist.",
+//                out_mess = "Invalid credentials.",
 //                out_data = null
 //            ))
-//        }
-
-        if (!BCryptPasswordEncoder().matches(body.password, user.get().password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(GlobalResponse(
-                out_stat = "F",
-                out_mess = "Invalid credentials.",
-                out_data = null
-            ))
         }
 
         val jwt = jwtUtil.generateJwtToken("http://localhost:8000", user.get())
