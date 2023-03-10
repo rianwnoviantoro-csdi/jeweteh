@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
+import javax.validation.ConstraintViolationException
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/")
 class AuthController(private val userService: UserService, private val jwtUtil: JwtUtil) {
     @PostMapping("/signup")
-    fun signup(@Valid @RequestBody body: SignupRequest, errors: Errors): ResponseEntity<Any> {
+    fun signup(@RequestBody body: SignupRequest, errors: Errors): ResponseEntity<Any> {
         if (errors.hasErrors()) {
             val list: ArrayList<String> = ArrayList()
 
@@ -51,32 +52,16 @@ class AuthController(private val userService: UserService, private val jwtUtil: 
     }
 
     @PostMapping("/signin")
-    fun signin(@Valid @RequestBody body: SigninRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
+    fun signin(@RequestBody body: SigninRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
+        val user = userService.findByEmail(body)
 
-        if (errors.hasErrors()) {
-            val list: ArrayList<String> = ArrayList()
-
-            for (err in errors.allErrors) {
-                err.defaultMessage?.let { list.add(it) }
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(GlobalResponse(
-                out_stat = "F",
-                out_mess = "Failed.",
-                out_data = list
-            ))
-        }
-
-
-        val user = userService.findByEmail(body.email)
-
-        if (!user.isPresent) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GlobalResponse(
-                out_stat = "F",
-                out_mess = "User doesn't exist.",
-                out_data = null
-            ))
-        }
+//        if (!user.isPresent) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GlobalResponse(
+//                out_stat = "F",
+//                out_mess = "User doesn't exist.",
+//                out_data = null
+//            ))
+//        }
 
         if (!BCryptPasswordEncoder().matches(body.password, user.get().password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(GlobalResponse(
