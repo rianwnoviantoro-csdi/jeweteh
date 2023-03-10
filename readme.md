@@ -77,6 +77,6 @@
   "out_data": null
 }
 ```
-- 
+
 - Cookies:
 > token = ""
