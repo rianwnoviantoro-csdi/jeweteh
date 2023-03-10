@@ -64,3 +64,19 @@
   }
 }
 ```
+
+### Sign out
+> [POST] {url}/api/v1/signout
+
+
+- Response:
+```json
+{
+  "out_stat": "T",
+  "out_mess": "Signed out.",
+  "out_data": null
+}
+```
+- 
+- Cookies:
+> token = ""
