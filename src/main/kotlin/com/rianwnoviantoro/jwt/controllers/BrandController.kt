@@ -49,7 +49,7 @@ class BrandController(private val brandService: BrandService) {
     }
 
     @PostMapping("/getAll")
-    fun signin(@RequestBody body: GetBrandRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
+    fun getAllBrands(@RequestBody body: GetBrandRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
         val brand = brandService.findWithFilter(body)
 
         return ResponseEntity.ok(GlobalResponse(
