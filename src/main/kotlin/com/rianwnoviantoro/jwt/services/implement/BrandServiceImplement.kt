@@ -4,12 +4,10 @@ import com.rianwnoviantoro.jwt.domains.dto.requests.CreateBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.GetBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.responses.BrandResponse
 import com.rianwnoviantoro.jwt.domains.entities.BrandEntity
-import com.rianwnoviantoro.jwt.error.NotFoundException
 import com.rianwnoviantoro.jwt.repositories.BrandRepository
 import com.rianwnoviantoro.jwt.services.BrandService
 import com.rianwnoviantoro.jwt.utils.ValidationUtils
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class BrandServiceImplement(
@@ -32,9 +30,7 @@ class BrandServiceImplement(
 
         val found = brandRepository.findWithFilter(body.p_search.toString())
 
-        val list: List<BrandEntity> = found.toList()
-
-        return list.map { brandList(it) }
+        return found.map { brandList(it) }
     }
 
     private fun brandList(brand: BrandEntity): BrandResponse{
