@@ -2,17 +2,16 @@ package com.rianwnoviantoro.jwt.controllers
 
 import com.rianwnoviantoro.jwt.domains.dto.requests.CreateBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.GetBrandRequest
-import com.rianwnoviantoro.jwt.domains.dto.requests.SigninRequest
-import com.rianwnoviantoro.jwt.domains.dto.responses.BrandResponse
 import com.rianwnoviantoro.jwt.domains.dto.responses.GlobalResponse
-import com.rianwnoviantoro.jwt.domains.dto.responses.JwtResponse
-import com.rianwnoviantoro.jwt.domains.entities.BrandEntity
+import com.rianwnoviantoro.jwt.error.UnauthorizedException
 import com.rianwnoviantoro.jwt.services.BrandService
+import com.rianwnoviantoro.jwt.utils.JwtUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
@@ -20,7 +19,7 @@ import kotlin.collections.ArrayList
 
 @RestController
 @RequestMapping("/api/v1/brands")
-class BrandController(private val brandService: BrandService) {
+class BrandController(private val brandService: BrandService, private val jwtUtil: JwtUtil) {
     @PostMapping("/create")
     fun create(@RequestBody body: CreateBrandRequest, errors: Errors): ResponseEntity<Any> {
         if (errors.hasErrors()) {
@@ -51,7 +50,17 @@ class BrandController(private val brandService: BrandService) {
     }
 
     @PostMapping("/getAll")
-    fun getAllBrands(@RequestBody body: GetBrandRequest, response: HttpServletResponse, errors: Errors): ResponseEntity<Any> {
+    fun getAllBrands(
+        @RequestBody body: GetBrandRequest,
+        @RequestHeader("APIKey") APIKey: String,
+        errors: Errors): ResponseEntity<Any> {
+
+        if (APIKey.isEmpty()) {
+            throw UnauthorizedException()
+        }
+
+        jwtUtil.validateToken(APIKey)
+
         val brand = brandService.findWithFilter(body)
 
         return ResponseEntity.ok(GlobalResponse(
