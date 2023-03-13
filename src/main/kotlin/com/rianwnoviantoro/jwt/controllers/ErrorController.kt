@@ -23,8 +23,8 @@ class ErrorController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(GlobalResponse(
             out_stat = "F",
-            out_mess = "Bad request.",
-            out_data = errors
+            out_mess = errors,
+            out_data = null
         ))
     }
 

@@ -2,6 +2,7 @@ package com.rianwnoviantoro.jwt.services.implement
 
 import com.rianwnoviantoro.jwt.domains.dto.requests.CreateBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.GetBrandRequest
+import com.rianwnoviantoro.jwt.domains.dto.responses.BrandResponse
 import com.rianwnoviantoro.jwt.domains.entities.BrandEntity
 import com.rianwnoviantoro.jwt.error.NotFoundException
 import com.rianwnoviantoro.jwt.repositories.BrandRepository
@@ -26,17 +27,20 @@ class BrandServiceImplement(
         brandRepository.save(brand)
     }
 
-    override fun findWithFilter(body: GetBrandRequest): List<BrandEntity> {
+    override fun findWithFilter(body: GetBrandRequest): List<BrandResponse> {
         validationUtils.validate(body)
 
         val found = brandRepository.findWithFilter(body.p_search.toString())
 
-        println(found)
+        val list: List<BrandEntity> = found.toList()
 
-//        if (!found.isPresent) {
-//            throw NotFoundException()
-//        }
+        return list.map { brandList(it) }
+    }
 
-        return found
+    private fun brandList(brand: BrandEntity): BrandResponse{
+        return BrandResponse(
+            cd_brand = brand.cd_brand!!,
+            desc_brand = brand.desc_brand!!
+        )
     }
 }

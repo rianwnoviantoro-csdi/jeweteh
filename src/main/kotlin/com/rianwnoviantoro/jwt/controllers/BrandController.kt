@@ -3,8 +3,10 @@ package com.rianwnoviantoro.jwt.controllers
 import com.rianwnoviantoro.jwt.domains.dto.requests.CreateBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.GetBrandRequest
 import com.rianwnoviantoro.jwt.domains.dto.requests.SigninRequest
+import com.rianwnoviantoro.jwt.domains.dto.responses.BrandResponse
 import com.rianwnoviantoro.jwt.domains.dto.responses.GlobalResponse
 import com.rianwnoviantoro.jwt.domains.dto.responses.JwtResponse
+import com.rianwnoviantoro.jwt.domains.entities.BrandEntity
 import com.rianwnoviantoro.jwt.services.BrandService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.ArrayList
 import javax.servlet.http.HttpServletResponse
+import kotlin.collections.ArrayList
 
 @RestController
 @RequestMapping("/api/v1/brands")
