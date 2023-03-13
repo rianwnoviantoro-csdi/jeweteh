@@ -29,7 +29,7 @@ class BrandServiceImplement(
     override fun findWithFilter(body: GetBrandRequest): List<BrandEntity> {
         validationUtils.validate(body)
 
-        val found = brandRepository.findWithFilter(body.search.toString())
+        val found = brandRepository.findWithFilter(body.p_search.toString())
 
         println(found)
 
